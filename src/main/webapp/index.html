@@ -1,15 +1,452 @@
-<!DOCTYPE html><!-- comment -->
-<html>
-    <head>
-        <title>Menu' Principale</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Benvenuto - Fantacalcio</title>
+  <meta name="description" content="Piattaforma Fantacalcio — Lista giocatori, Squadre, Calendario e Classifica" />
+
+  <!-- Stili semplici e moderni -->
+  <style>
+    :root{
+      --bg: #0f1724;
+      --card: #0b1220;
+      --accent: #ffcc33;
+      --muted: #9aa4b2;
+      --glass: rgba(255,255,255,0.03);
+      --radius: 12px;
+      --maxw: 1100px;
+      font-family: Inter, Roboto, -apple-system, "Segoe UI", "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:
+        radial-gradient(1000px 600px at 10% 10%, rgba(255,204,51,0.04), transparent 8%),
+        linear-gradient(180deg, #061223 0%, var(--bg) 100%);
+      color:#e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .container{
+      width:100%;
+      height:100%;
+      max-width:var(--maxw);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:18px;
+      padding:28px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    header{
+      display:flex;
+      gap:20px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:18px;
+    }
+    .brand{
+      display:flex;
+      gap:14px;
+      align-items:center;
+    }
+    .logo{
+      height:56px;
+      width:56px;
+      border-radius:10px;
+      background: linear-gradient(135deg, #ffcc33, #ff9a00);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#111;
+      font-weight:700;
+      font-size:20px;
+      box-shadow: 0 6px 18px rgba(255,156,0,0.14);
+    }
+    .brand h1{margin:0;font-size:18px;letter-spacing:0.2px}
+    .brand p{margin:0;font-size:12px;color:var(--muted)}
+
+    nav {
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .btn {
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:10px 14px;
+      background:transparent;
+      border-radius:10px;
+      border:1px solid transparent;
+      color:var(--accent);
+      font-weight:600;
+      text-decoration:none;
+      cursor:pointer;
+      transition: all .18s ease;
+      font-size:14px;
+      backdrop-filter: blur(6px);
+    }
+    .btn:hover{ transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.35) }
+    .btn.primary{
+      background: linear-gradient(90deg, rgba(255,204,51,0.08), rgba(255,204,51,0.04));
+      color: #fff;
+      border: 1px solid rgba(255,204,51,0.18);
+    }
+
+    main{
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:22px;
+      align-items:start;
+    }
+
+    .welcome{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding:18px;
+      border-radius:var(--radius);
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .welcome h2{margin:0 0 6px 0;font-size:20px}
+    .welcome p{margin:0 0 14px 0;color:var(--muted)}
+
+    .grid-actions{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .card{
+      background:var(--card);
+      padding:12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .action-link{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      padding:12px;
+      border-radius:10px;
+      text-decoration:none;
+      color:inherit;
+      transition:transform .12s ease, background .12s ease;
+      background:var(--glass);
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .action-link:hover{ transform: translateY(-4px) scale(1.01) }
+    .action-link svg{width:36px;height:36px;flex:0 0 36px}
+    .action-link .title{font-weight:700}
+    .action-link .small{font-size:12px;color:var(--muted)}
+
+    /* Sidebar */
+    aside .panel{
+      position:sticky;
+      top:28px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      padding:14px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .search{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      margin-bottom:12px;
+    }
+    .search input{
+      flex:1;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.04);
+      background:transparent;
+      color:inherit;
+      outline:none;
+    }
+
+    /* Sample lists */
+    .list { display:grid; gap:8px; margin-top:10px }
+    .player{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:8px;
+      border-radius:8px;
+      background: rgba(255,255,255,0.01);
+      border:1px solid rgba(255,255,255,0.01);
+    }
+    .avatar{
+      width:40px;height:40px;border-radius:8px;background:linear-gradient(180deg,#20394b,#16303d);
+      display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent)
+    }
+
+    /* Sections anchors */
+    section { margin-top:18px; }
+    h3{margin:0 0 8px 0}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:8px;
+      font-size:14px;
+    }
+    th,td{padding:8px;text-align:left;border-bottom:1px dashed rgba(255,255,255,0.02)}
+    th{font-weight:700;color:var(--muted);font-size:13px}
+
+    /* Responsive */
+    @media (max-width:1000px){
+      main{ grid-template-columns: 1fr; }
+      aside .panel{ position:relative; top:auto }
+    }
+    @media (max-width:520px){
+      .brand h1{font-size:16px}
+      .brand p{display:none}
+      .logo{height:44px;width:44px;font-size:16px}
+    }
+  </style>
+</head>
 <body>
-    <h1>FANTACALCIO</h1>
-    
-    <h2>
-    <br><a href="menu">ACCEDI AL MENU</a>
-    </h2>
+  <div class="container" role="main">
+    <header>
+      <div class="brand" aria-hidden="false">
+        <div class="logo" aria-hidden="true">FC</div>
+        <div>
+          <h1>Fantaclub</h1>
+          <p>Benvenuto nella tua piattaforma di fantacalcio</p>
+        </div>
+      </div>
+
+      <nav aria-label="Navigazione principale">
+        <a class="btn" href="menu" title="Vai alla lista giocatori">🏃‍♂️ LISTA GIOCATORI</a>
+        <a class="btn" href="#squadre" title="Vai alla lista squadre">🛡️ LISTA SQUADRE</a>
+        <a class="btn" href="#calendario" title="Vai al calendario">📅 CALENDARIO</a>
+        <a class="btn primary" href="#classifica" title="Vai alla classifica">🏆 CLASSIFICA</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Colonna principale -->
+      <div>
+        <div class="welcome" aria-labelledby="welcome-title">
+          <h2 id="welcome-title">Benvenuto su Fantaclub!</h2>
+          <p>Gestisci la tua rosa, controlla il calendario delle partite, confronta le squadre e segui la classifica. Usa i pulsanti qui sopra per spostarti rapidamente.</p>
+
+          <div class="grid-actions" role="navigation" aria-label="Azioni rapide">
+            <div class="card">
+              <a class="action-link" href="menu">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4z" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20c0-3.3 2.7-6 6-6h4c3.3 0 6 2.7 6 6" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div>
+                  <div class="title">Lista Giocatori</div>
+                  <div class="small">Cerca, filtra e gestisci la tua rosa</div>
+                </div>
+              </a>
+            </div>
+
+            <div class="card">
+              <a class="action-link" href="#squadre">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l8 4v6c0 5-4 8-8 8s-8-3-8-8V7l8-4z" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div>
+                  <div class="title">Lista Squadre</div>
+                  <div class="small">Panoramica delle squadre iscritte</div>
+                </div>
+              </a>
+            </div>
+
+            <div class="card">
+              <a class="action-link" href="#calendario">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.1"/><path d="M16 3v4M8 3v4M3 11h18" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+                <div>
+                  <div class="title">Calendario</div>
+                  <div class="small">Date e orari delle sfide</div>
+                </div>
+              </a>
+            </div>
+
+            <div class="card">
+              <a class="action-link" href="#classifica">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l2 6h6l-4.9 3.6L18 21l-6-4-6 4 1.9-8.4L5 9h6z" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div>
+                  <div class="title">Classifica</div>
+                  <div class="small">Controlla le posizioni e i punti</div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Sezioni di esempio: giocatori, squadre, calendario, classifica -->
+          <section id="giocatori" aria-labelledby="s1">
+            <h3 id="s1">Lista Giocatori</h3>
+            <p class="small" style="color:var(--muted)">Esempio rapido di giocatori registrati.</p>
+
+            <div class="list" id="players-list" aria-live="polite">
+              <!-- Voci di esempio -->
+              <div class="player">
+                <div class="avatar">CR</div>
+                <div>
+                  <div style="font-weight:700">Cristiano Ronaldo</div>
+                  <div style="font-size:13px;color:var(--muted)">Attaccante — Juventus</div>
+                </div>
+                <div style="margin-left:auto;color:var(--muted);font-size:13px">Punti: 120</div>
+              </div>
+
+              <div class="player">
+                <div class="avatar">LM</div>
+                <div>
+                  <div style="font-weight:700">Lionel Messi</div>
+                  <div style="font-size:13px;color:var(--muted)">Attaccante — PSG</div>
+                </div>
+                <div style="margin-left:auto;color:var(--muted);font-size:13px">Punti: 134</div>
+              </div>
+
+              <div class="player">
+                <div class="avatar">KB</div>
+                <div>
+                  <div style="font-weight:700">Kylian Mbappé</div>
+                  <div style="font-size:13px;color:var(--muted)">Attaccante — PSG</div>
+                </div>
+                <div style="margin-left:auto;color:var(--muted);font-size:13px">Punti: 110</div>
+              </div>
+            </div>
+          </section>
+
+          <section id="squadre" aria-labelledby="s2">
+            <h3 id="s2">Lista Squadre</h3>
+            <p class="small" style="color:var(--muted)">Riepilogo delle squadre del campionato.</p>
+            <div class="list" style="margin-top:8px">
+              <div class="player">
+                <div class="avatar" aria-hidden="true">AS</div>
+                <div>
+                  <div style="font-weight:700">Asso Fantasy</div>
+                  <div style="font-size:13px;color:var(--muted)">Manager: Marco Rossi</div>
+                </div>
+                <div style="margin-left:auto;color:var(--muted);font-size:13px">Punti: 254</div>
+              </div>
+
+              <div class="player">
+                <div class="avatar">FC</div>
+                <div>
+                  <div style="font-weight:700">FC Galattici</div>
+                  <div style="font-size:13px;color:var(--muted)">Manager: Anna Bianchi</div>
+                </div>
+                <div style="margin-left:auto;color:var(--muted);font-size:13px">Punti: 241</div>
+              </div>
+            </div>
+          </section>
+
+          <section id="calendario" aria-labelledby="s3">
+            <h3 id="s3">Calendario</h3>
+            <p class="small" style="color:var(--muted)">Prossime partite e turni.</p>
+            <table aria-describedby="s3">
+              <thead>
+                <tr><th>Data</th><th>Partita</th><th>Orario</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>14/09/2025</td><td>Asso Fantasy — FC Galattici</td><td>20:45</td></tr>
+                <tr><td>21/09/2025</td><td>Rivali United — DPF Stars</td><td>18:30</td></tr>
+                <tr><td>28/09/2025</td><td>Centurioni — Asso Fantasy</td><td>21:00</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="classifica" aria-labelledby="s4">
+            <h3 id="s4">Classifica</h3>
+            <p class="small" style="color:var(--muted)">Posizioni aggiornate.</p>
+            <table>
+              <thead>
+                <tr><th>#</th><th>Squadra</th><th>Punti</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>Asso Fantasy</td><td>254</td></tr>
+                <tr><td>2</td><td>FC Galattici</td><td>241</td></tr>
+                <tr><td>3</td><td>DPF Stars</td><td>230</td></tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside>
+        <div class="panel" aria-label="Pannello laterale">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <strong>Rapida ricerca</strong>
+            <span style="font-size:13px;color:var(--muted)">Ctrl+K</span>
+          </div>
+
+          <div class="search">
+            <input id="search" aria-label="Cerca giocatori o squadre" placeholder="Cerca giocatori, squadre..." />
+            <button id="clear" title="Pulisci">✖</button>
+          </div>
+
+          <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Accesso rapido</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <a class="btn" href="menu">Vai a Giocatori</a>
+            <a class="btn" href="#squadre">Vai a Squadre</a>
+            <a class="btn" href="#calendario">Vai a Calendario</a>
+            <a class="btn primary" href="#classifica">Vai a Classifica</a>
+          </div>
+
+          <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.02)">
+
+          <div style="font-size:13px;color:var(--muted)">Info</div>
+          <p style="font-size:13px;color:var(--muted);margin:8px 0 0 0">Questa è una demo. Sostituisci i dati di esempio con i contenuti reali della tua app.</p>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Script: ricerca semplice e accessibilità -->
+  <script>
+    (function(){
+      const search = document.getElementById('search');
+      const clear = document.getElementById('clear');
+      const playersList = document.getElementById('players-list');
+
+      // Semplice filtro su nomi presenti nella lista (demo)
+      search.addEventListener('input', () => {
+        const q = search.value.trim().toLowerCase();
+        const nodes = playersList.querySelectorAll('.player');
+        if(!q){
+          nodes.forEach(n => n.style.display = '');
+          return;
+        }
+        nodes.forEach(n => {
+          const text = n.innerText.toLowerCase();
+          n.style.display = text.includes(q) ? '' : 'none';
+        });
+      });
+
+      clear.addEventListener('click', () => { search.value=''; search.dispatchEvent(new Event('input')); search.focus(); });
+
+      // Shortcut Ctrl+K / Cmd+K to focus search
+      window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          search.focus();
+        }
+      });
+
+      // Smooth scroll for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', (ev) => {
+          const targetId = a.getAttribute('href').slice(1);
+          const target = document.getElementById(targetId);
+          if(target){
+            ev.preventDefault();
+            target.scrollIntoView({behavior:'smooth', block:'start'});
+            // update focus for accessibility
+            target.setAttribute('tabindex','-1');
+            target.focus({preventScroll:true});
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
